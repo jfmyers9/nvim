@@ -80,6 +80,10 @@ require('lazy').setup({
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     keys = {
       { '<C-p>', '<cmd>lua require("fzf-lua").files()<CR>', { silent = true, noremap = true } },
+      { '<Leader>sg', '<cmd>lua require("fzf-lua").grep()<CR>', { silent = true, noremap = true } },
+      { '<Leader>sf', '<cmd>lua require("fzf-lua").files()<CR>', { silent = true, noremap = true } },
+      { '<Leader>sl', '<cmd>lua require("fzf-lua").lines()<CR>', { silent = true, noremap = true } },
+      { '<Leader>sc', '<cmd>lua require("fzf-lua").git_commits()<CR>', { silent = true, noremap = true } },
     },
   },
 })
