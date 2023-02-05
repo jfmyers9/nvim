@@ -34,6 +34,8 @@ vim.o.wrap = false
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+vim.keymap.set("v", "Y", '"+y')
+
 require('lazy').setup({
   {
     'folke/tokyonight.nvim',
@@ -63,6 +65,9 @@ require('lazy').setup({
       require('nvim-treesitter.configs').setup {
         ensure_installed = { 'go', 'lua', 'vim' },
         auto_install = true,
+        highlight = {
+          enable = true,
+        },
       }
     end,
   },
