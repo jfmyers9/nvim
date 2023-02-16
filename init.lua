@@ -93,6 +93,7 @@ require('lazy').setup({
   },
   { 'kevinhwang91/nvim-bqf', ft = 'qf' },
   { 'windwp/nvim-autopairs', config = true },
+  { 'nvim-lua/plenary.nvim' },
 })
 
 local opts = { noremap = true, silent = true }
@@ -148,3 +149,13 @@ require('fzf-lua').setup {
     },
   },
 }
+
+local null_ls = require("null-ls")
+
+local sources = {
+  null_ls.builtins.formatting.goimports,
+}
+
+null_ls.setup({
+  sources = sources,
+})

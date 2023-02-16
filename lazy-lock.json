@@ -9,6 +9,7 @@
   "nvim-lspconfig": { "branch": "master", "commit": "902d6aa31450d26e11bedcbef8af5b6fe2e1ffe8" },
   "nvim-treesitter": { "branch": "master", "commit": "0e6d4b4172f30c4aa44a9adc9ea5719723a1fac3" },
   "nvim-web-devicons": { "branch": "master", "commit": "2b96193abe4372e18e4f4533895a42a466d53c17" },
+  "plenary.nvim": { "branch": "master", "commit": "9a0d3bf7b832818c042aaf30f692b081ddd58bd9" },
   "tokyonight.nvim": { "branch": "main", "commit": "affb21a81e6d7de073378eb86d02864c594104d9" },
   "vim-abolish": { "branch": "master", "commit": "d55c90d6c9995ccb79d2152564a4939cd84d73e9" },
   "vim-commentary": { "branch": "master", "commit": "e87cd90dc09c2a203e13af9704bd0ef79303d755" },
