@@ -4,9 +4,7 @@ if not vim.loop.fs_stat(lazypath) then
     'git',
     'clone',
     '--filter=blob:none',
-    'https://github.com/folke/lazy.nvim.git',
-    '--branch=stable',
-    lazypath,
+    'https://github.com/folke/lazy.nvim.git', '--branch=stable', lazypath,
   })
 end
 vim.opt.rtp:prepend(lazypath)
@@ -138,7 +136,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
-require('lspconfig')['sumneko_lua'].setup {
+require('lspconfig')['lua_ls'].setup {
   settings = { Lua = { diagnostics = { globals = { 'vim' } } } },
 }
 
