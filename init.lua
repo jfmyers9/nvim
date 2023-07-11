@@ -40,7 +40,7 @@ require('lazy').setup({
     lazy = false,
     priority = 1000,
     config = function()
-      vim.cmd([[colorscheme tokyonight]])
+      vim.cmd([[colorscheme tokyonight-storm]])
     end,
   },
   { 'williamboman/mason.nvim', config = true },
@@ -82,11 +82,11 @@ require('lazy').setup({
     'ibhagwan/fzf-lua',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     keys = {
-      { '<C-p>', '<cmd>lua require("fzf-lua").files()<CR>', { silent = true, noremap = true } },
+      { '<C-p>',      '<cmd>lua require("fzf-lua").files()<CR>',            { silent = true, noremap = true } },
       { '<Leader>sg', '<cmd>lua require("fzf-lua").live_grep_native()<CR>', { silent = true, noremap = true } },
-      { '<Leader>sf', '<cmd>lua require("fzf-lua").files()<CR>', { silent = true, noremap = true } },
-      { '<Leader>sl', '<cmd>lua require("fzf-lua").lines()<CR>', { silent = true, noremap = true } },
-      { '<Leader>sc', '<cmd>lua require("fzf-lua").git_commits()<CR>', { silent = true, noremap = true } },
+      { '<Leader>sf', '<cmd>lua require("fzf-lua").files()<CR>',            { silent = true, noremap = true } },
+      { '<Leader>sl', '<cmd>lua require("fzf-lua").lines()<CR>',            { silent = true, noremap = true } },
+      { '<Leader>sc', '<cmd>lua require("fzf-lua").git_commits()<CR>',      { silent = true, noremap = true } },
     },
   },
   { 'kevinhwang91/nvim-bqf', ft = 'qf' },
