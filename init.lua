@@ -92,6 +92,7 @@ require('lazy').setup({
   { 'kevinhwang91/nvim-bqf', ft = 'qf' },
   { 'windwp/nvim-autopairs', config = true },
   { 'nvim-lua/plenary.nvim' },
+  { 'github/copilot.vim' },
 })
 
 local opts = { noremap = true, silent = true }
