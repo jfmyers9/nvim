@@ -47,7 +47,13 @@ require('lazy').setup({
   {
     'williamboman/mason-lspconfig.nvim',
     config = function()
-      require('mason-lspconfig').setup({ automatic_installation = true })
+      require('mason-lspconfig').setup({
+        automatic_installation = true,
+        ensure_installed = {
+          "gopls",
+          "lua_ls",
+        },
+      })
       require('mason-lspconfig').setup_handlers {
         function(server_name)
           require('lspconfig')[server_name].setup {}
