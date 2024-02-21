@@ -50,8 +50,13 @@ require('lazy').setup({
       require('mason-lspconfig').setup({
         automatic_installation = true,
         ensure_installed = {
+          "bufls",
+          "dockerls",
           "gopls",
+          "graphql",
           "lua_ls",
+          "tflint",
+          "yamlls",
         },
       })
       require('mason-lspconfig').setup_handlers {
