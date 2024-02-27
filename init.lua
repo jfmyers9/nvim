@@ -72,6 +72,22 @@ require('lazy').setup({
             capabilities = capabilities,
           }
         end,
+        ["kotlin_language_server"] = function()
+          local root_files = {
+            'settings.gradle',     -- Gradle (multi-project)
+            'settings.gradle.kts', -- Gradle (multi-project)
+            'build.xml',           -- Ant
+            'pom.xml',             -- Maven
+            'build.gradle',        -- Gradle
+            'build.gradle.kts',    -- Gradle
+            'maven_install.json',
+          }
+          local util = require 'lspconfig.util'
+          require('lspconfig').kotlin_language_server.setup {
+            capabilities = capabilities,
+            root_dir = util.root_pattern(unpack(root_files))
+          }
+        end,
       }
     end,
   },
