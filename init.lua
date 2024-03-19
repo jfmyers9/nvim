@@ -129,6 +129,7 @@ require('lazy').setup({
   { 'windwp/nvim-autopairs', config = true },
   { 'nvim-lua/plenary.nvim' },
   { 'github/copilot.vim' },
+  { 'hrsh7th/vim-vsnip' },
   {
     'hrsh7th/nvim-cmp',
     dependencies = {
@@ -141,6 +142,11 @@ require('lazy').setup({
       local cmp = require("cmp")
 
       cmp.setup({
+        snippet = {
+          expand = function(args)
+            vim.fn["vsnip#anonymous"](args.body)
+          end,
+        },
         window = {
           completion = cmp.config.window.bordered(),
           documentation = cmp.config.window.bordered(),
@@ -175,6 +181,7 @@ require('lazy').setup({
         }),
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
+          { name = "vsnip" },
           { name = "luasnip" },
           { name = "buffer" },
           { name = "tmux" },
