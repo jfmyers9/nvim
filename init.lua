@@ -88,6 +88,15 @@ require('lazy').setup({
             root_dir = util.root_pattern(unpack(root_files))
           }
         end,
+        ["gopls"] = function()
+          require('lspconfig').gopls.setup {
+            settings = {
+              gopls = {
+                ['build.buildFlags'] = { '-mod=readonly' },
+              },
+            },
+          }
+        end,
       }
     end,
   },
