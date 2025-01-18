@@ -50,7 +50,7 @@ require('lazy').setup({
       require('mason-lspconfig').setup({
         automatic_installation = true,
         ensure_installed = {
-          "bufls",
+          "buf_ls",
           "dockerls",
           "gopls",
           "graphql",
@@ -70,22 +70,6 @@ require('lazy').setup({
           require('lspconfig').lua_ls.setup {
             settings = { Lua = { diagnostics = { globals = { 'vim' } } } },
             capabilities = capabilities,
-          }
-        end,
-        ["kotlin_language_server"] = function()
-          local root_files = {
-            'settings.gradle',     -- Gradle (multi-project)
-            'settings.gradle.kts', -- Gradle (multi-project)
-            'build.xml',           -- Ant
-            'pom.xml',             -- Maven
-            'build.gradle',        -- Gradle
-            'build.gradle.kts',    -- Gradle
-            'maven_install.json',
-          }
-          local util = require 'lspconfig.util'
-          require('lspconfig').kotlin_language_server.setup {
-            capabilities = capabilities,
-            root_dir = util.root_pattern(unpack(root_files))
           }
         end,
         ["gopls"] = function()
