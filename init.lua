@@ -41,6 +41,7 @@ require('lazy').setup({
     priority = 1000,
     config = function()
       vim.cmd([[colorscheme tokyonight-storm]])
+      -- vim.cmd([[colorscheme tokyonight-day]])
     end,
   },
   { 'williamboman/mason.nvim', config = true },
@@ -76,7 +77,7 @@ require('lazy').setup({
           require('lspconfig').gopls.setup {
             settings = {
               gopls = {
-                ['build.buildFlags'] = { '-mod=readonly' },
+                buildFlags = { '-mod=readonly' },
               },
             },
           }
@@ -106,7 +107,7 @@ require('lazy').setup({
   { 'tpope/vim-rhubarb' },
   { 'tpope/vim-surround' },
   { 'tpope/vim-vinegar' },
-  { 'jose-elias-alvarez/null-ls.nvim' },
+  { 'nvimtools/none-ls.nvim' },
   {
     'ibhagwan/fzf-lua',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -121,7 +122,6 @@ require('lazy').setup({
   { 'kevinhwang91/nvim-bqf', ft = 'qf' },
   { 'windwp/nvim-autopairs', config = true },
   { 'nvim-lua/plenary.nvim' },
-  { 'github/copilot.vim' },
   { 'hrsh7th/vim-vsnip' },
   {
     'hrsh7th/nvim-cmp',
