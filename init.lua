@@ -122,6 +122,24 @@ require('lazy').setup({
   { 'kevinhwang91/nvim-bqf', ft = 'qf' },
   { 'windwp/nvim-autopairs', config = true },
   { 'nvim-lua/plenary.nvim' },
+  {
+    'ThePrimeagen/harpoon',
+    branch = 'harpoon2',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      local harpoon = require('harpoon')
+      harpoon:setup()
+      -- Key mappings
+      vim.keymap.set('n', '<leader>a', function() harpoon:list():add() end)
+      vim.keymap.set('n', '<C-e>', function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+
+      -- Navigate to specific marks
+      vim.keymap.set('n', '<C-h>', function() harpoon:list():select(1) end)
+      vim.keymap.set('n', '<C-t>', function() harpoon:list():select(2) end)
+      vim.keymap.set('n', '<C-n>', function() harpoon:list():select(3) end)
+      vim.keymap.set('n', '<C-s>', function() harpoon:list():select(4) end)
+    end,
+  },
   { 'hrsh7th/vim-vsnip' },
   {
     'hrsh7th/nvim-cmp',
@@ -259,3 +277,30 @@ local sources = {
 null_ls.setup({
   sources = sources,
 })
+
+-- Harpoon context collection function
+local function collect_harpoon_context()
+  local harpoon = require('harpoon')
+  local buffers = {}
+  local list = harpoon:list()
+  for i = 1, list:length() do
+    local item = list:get(i)
+    if item and item.value then
+      -- Convert to relative path if possible
+      local relative_path = vim.fn.fnamemodify(item.value, ':.')
+      table.insert(buffers, '@' .. relative_path)
+    end
+  end
+
+  if #buffers > 0 then
+    local context = table.concat(buffers, ' ')
+    -- Copy to system clipboard
+    vim.fn.setreg('+', context)
+    vim.notify('Copied ' .. #buffers .. ' harpoon contexts to clipboard')
+  else
+    vim.notify('No files in harpoon list')
+  end
+end
+
+-- Set up the keybinding for harpoon context collection
+vim.keymap.set('n', '<leader>bc', collect_harpoon_context, { desc = 'Copy harpoon context to clipboard' })
