@@ -57,6 +57,7 @@ require('lazy').setup({
           "graphql",
           "lua_ls",
           "tflint",
+          "vtsls",
           "yamlls",
         },
       })
@@ -78,6 +79,21 @@ require('lazy').setup({
             settings = {
               gopls = {
                 buildFlags = { '-mod=readonly' },
+              },
+            },
+          }
+        end,
+        ["vtsls"] = function()
+          require('lspconfig').vtsls.setup {
+            settings = {
+              typescript = {
+                preferGoToSourceDefinition = true,
+                tsserver = {
+                  maxTsServerMemory = 16384,
+                }
+              },
+              javascript = {
+                preferGoToSourceDefinition = true,
               },
             },
           }
