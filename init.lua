@@ -47,6 +47,10 @@ require('lazy').setup({
   { 'williamboman/mason.nvim', config = true },
   {
     'williamboman/mason-lspconfig.nvim',
+    dependencies = {
+      'williamboman/mason.nvim',
+      'hrsh7th/cmp-nvim-lsp',
+    },
     config = function()
       require('mason-lspconfig').setup({
         automatic_installation = true,
@@ -61,47 +65,45 @@ require('lazy').setup({
           "yamlls",
         },
       })
+
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
-      require('mason-lspconfig').setup_handlers {
-        function(server_name)
-          require('lspconfig')[server_name].setup {
-            capabilities = capabilities,
-          }
-        end,
-        ["lua_ls"] = function()
-          require('lspconfig').lua_ls.setup {
-            settings = { Lua = { diagnostics = { globals = { 'vim' } } } },
-            capabilities = capabilities,
-          }
-        end,
-        ["gopls"] = function()
-          require('lspconfig').gopls.setup {
-            settings = {
-              gopls = {
-                buildFlags = { '-mod=readonly' },
-              },
-            },
-          }
-        end,
-        ["vtsls"] = function()
-          require('lspconfig').vtsls.setup {
-            settings = {
-              typescript = {
-                preferGoToSourceDefinition = true,
-                tsserver = {
-                  maxTsServerMemory = 16384,
-                }
-              },
-              javascript = {
-                preferGoToSourceDefinition = true,
-              },
-            },
-          }
-        end,
-      }
+
+      -- Default config for all servers
+      vim.lsp.config('*', {
+        capabilities = capabilities,
+      })
+
+      -- Server-specific configs
+      vim.lsp.config('lua_ls', {
+        settings = { Lua = { diagnostics = { globals = { 'vim' } } } },
+      })
+
+      vim.lsp.config('gopls', {
+        settings = {
+          gopls = {
+            buildFlags = { '-mod=readonly' },
+          },
+        },
+      })
+
+      vim.lsp.config('vtsls', {
+        settings = {
+          typescript = {
+            preferGoToSourceDefinition = true,
+            tsserver = {
+              maxTsServerMemory = 16384,
+            }
+          },
+          javascript = {
+            preferGoToSourceDefinition = true,
+          },
+        },
+      })
+
+      -- Enable all installed servers
+      vim.lsp.enable(require('mason-lspconfig').get_installed_servers())
     end,
   },
-  { 'neovim/nvim-lspconfig' },
   {
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
