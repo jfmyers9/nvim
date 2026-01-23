@@ -1,5 +1,5 @@
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   vim.fn.system({
     'git',
     'clone',
@@ -14,8 +14,8 @@ vim.o.autowriteall = true
 vim.o.expandtab = true
 vim.o.grepformat = "%f:%l:%c:%m,%f:%l:%m"
 vim.o.grepprg = "rg --vimgrep --no-heading --smart-case"
-vim.o.hidden = true
 vim.o.ignorecase = true
+vim.o.smartcase = true
 vim.o.linespace = -1
 vim.o.mouse = 'a'
 vim.o.number = true
@@ -125,7 +125,17 @@ require('lazy').setup({
   { 'tpope/vim-rhubarb' },
   { 'tpope/vim-surround' },
   { 'tpope/vim-vinegar' },
-  { 'nvimtools/none-ls.nvim' },
+  {
+    'nvimtools/none-ls.nvim',
+    config = function()
+      local null_ls = require("null-ls")
+      null_ls.setup({
+        sources = {
+          null_ls.builtins.formatting.goimports,
+        },
+      })
+    end,
+  },
   {
     'ibhagwan/fzf-lua',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -136,6 +146,15 @@ require('lazy').setup({
       { '<Leader>sl', '<cmd>lua require("fzf-lua").lines()<CR>',            { silent = true, noremap = true } },
       { '<Leader>sc', '<cmd>lua require("fzf-lua").git_commits()<CR>',      { silent = true, noremap = true } },
     },
+    config = function()
+      require('fzf-lua').setup {
+        keymap = {
+          fzf = {
+            ["ctrl-q"] = "select-all+accept",
+          },
+        },
+      }
+    end,
   },
   { 'kevinhwang91/nvim-bqf', ft = 'qf' },
   { 'windwp/nvim-autopairs', config = true },
@@ -232,9 +251,7 @@ require('lazy').setup({
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
           { name = "vsnip" },
-          { name = "luasnip" },
           { name = "buffer" },
-          { name = "tmux" },
         }),
       })
 
@@ -259,16 +276,13 @@ require('lazy').setup({
 
 local opts = { noremap = true, silent = true }
 vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+vim.keymap.set('n', '[d', function() vim.diagnostic.jump({ count = -1 }) end, opts)
+vim.keymap.set('n', ']d', function() vim.diagnostic.jump({ count = 1 }) end, opts)
 vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
 vim.api.nvim_create_autocmd('LspAttach', {
   callback = function(args)
     local buffer = args.buf
-    local client = vim.lsp.get_client_by_id(args.data.client_id)
-
-
-    vim.api.nvim_buf_set_option(buffer, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+    vim.bo[buffer].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
     local bufopts = { noremap = true, silent = true, buffer = buffer }
     vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
@@ -287,7 +301,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
     vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, bufopts)
 
-    if client.supports_method "textDocument/formatting" then
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if client and client.supports_method("textDocument/formatting") then
       vim.api.nvim_clear_autocmds { buffer = buffer }
       vim.api.nvim_create_autocmd("BufWritePre", {
         buffer = buffer,
@@ -297,24 +312,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
       })
     end
   end,
-})
-
-require('fzf-lua').setup {
-  keymap = {
-    fzf = {
-      ["ctrl-q"] = "select-all+accept",
-    },
-  },
-}
-
-local null_ls = require("null-ls")
-
-local sources = {
-  null_ls.builtins.formatting.goimports,
-}
-
-null_ls.setup({
-  sources = sources,
 })
 
 -- Context collection utilities
