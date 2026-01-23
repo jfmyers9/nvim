@@ -147,8 +147,29 @@ require('lazy').setup({
     config = function()
       local harpoon = require('harpoon')
       harpoon:setup()
-      -- Key mappings
-      vim.keymap.set('n', '<leader>a', function() harpoon:list():add() end)
+
+      -- Toggle harpoon (add if not present, remove if present)
+      vim.keymap.set('n', '<leader>a', function()
+        local list = harpoon:list()
+        local current = vim.fn.expand('%:.')
+        -- Find if current file is in list
+        local found_idx = nil
+        for i = 1, list:length() do
+          local item = list:get(i)
+          if item and item.value == current then
+            found_idx = i
+            break
+          end
+        end
+        if found_idx then
+          list:remove_at(found_idx)
+          vim.notify('Removed from harpoon: ' .. current, vim.log.levels.INFO)
+        else
+          list:add()
+          vim.notify('Added to harpoon: ' .. current, vim.log.levels.INFO)
+        end
+      end, { desc = 'Toggle harpoon mark' })
+
       vim.keymap.set('n', '<C-e>', function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
 
       -- Navigate to specific marks
@@ -296,29 +317,82 @@ null_ls.setup({
   sources = sources,
 })
 
--- Harpoon context collection function
-local function collect_harpoon_context()
+-- Context collection utilities
+local function format_as_context(paths)
+  local formatted = {}
+  for _, path in ipairs(paths) do
+    local relative = vim.fn.fnamemodify(path, ':.')
+    table.insert(formatted, '@' .. relative)
+  end
+  return formatted
+end
+
+local function copy_context(paths, source_name)
+  if #paths > 0 then
+    local context = table.concat(format_as_context(paths), ' ')
+    vim.fn.setreg('+', context)
+    vim.notify('Copied ' .. #paths .. ' files from ' .. source_name .. ' to clipboard')
+  else
+    vim.notify('No files to copy from ' .. source_name)
+  end
+end
+
+-- Get all harpoon items as paths
+local function get_harpoon_paths()
   local harpoon = require('harpoon')
-  local buffers = {}
+  local paths = {}
   local list = harpoon:list()
   for i = 1, list:length() do
     local item = list:get(i)
     if item and item.value then
-      -- Convert to relative path if possible
-      local relative_path = vim.fn.fnamemodify(item.value, ':.')
-      table.insert(buffers, '@' .. relative_path)
+      table.insert(paths, item.value)
     end
   end
-
-  if #buffers > 0 then
-    local context = table.concat(buffers, ' ')
-    -- Copy to system clipboard
-    vim.fn.setreg('+', context)
-    vim.notify('Copied ' .. #buffers .. ' harpoon contexts to clipboard')
-  else
-    vim.notify('No files in harpoon list')
-  end
+  return paths
 end
 
--- Set up the keybinding for harpoon context collection
-vim.keymap.set('n', '<leader>bc', collect_harpoon_context, { desc = 'Copy harpoon context to clipboard' })
+-- Get all visible split buffers as paths
+local function get_split_paths()
+  local paths = {}
+  local seen = {}
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    local name = vim.api.nvim_buf_get_name(buf)
+    if name ~= '' and not seen[name] then
+      seen[name] = true
+      table.insert(paths, name)
+    end
+  end
+  return paths
+end
+
+-- <leader>bc: Copy all harpoon files
+vim.keymap.set('n', '<leader>bc', function()
+  copy_context(get_harpoon_paths(), 'harpoon')
+end, { desc = 'Copy harpoon context to clipboard' })
+
+-- <leader>bs: Copy all visible splits
+vim.keymap.set('n', '<leader>bs', function()
+  copy_context(get_split_paths(), 'splits')
+end, { desc = 'Copy split context to clipboard' })
+
+-- <leader>bp: Pick subset from harpoon via fzf
+vim.keymap.set('n', '<leader>bp', function()
+  local paths = get_harpoon_paths()
+  if #paths == 0 then
+    vim.notify('No files in harpoon list')
+    return
+  end
+
+  require('fzf-lua').fzf_exec(paths, {
+    prompt = 'Harpoon> ',
+    actions = {
+      ['default'] = function(selected)
+        copy_context(selected, 'harpoon selection')
+      end,
+    },
+    fzf_opts = {
+      ['--multi'] = true,
+    },
+  })
+end, { desc = 'Pick harpoon files to copy as context' })
