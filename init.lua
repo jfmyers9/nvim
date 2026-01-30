@@ -393,3 +393,13 @@ vim.keymap.set('n', '<leader>bp', function()
     },
   })
 end, { desc = 'Pick harpoon files to copy as context' })
+
+-- <leader>bl: Copy visual selection as context with line numbers
+vim.keymap.set('v', '<leader>bl', function()
+  local start_line = vim.fn.line("'<")
+  local end_line = vim.fn.line("'>")
+  local relative_path = vim.fn.expand('%:.')
+  local context = '@' .. relative_path .. '#' .. start_line .. '-' .. end_line
+  vim.fn.setreg('+', context)
+  vim.notify('Copied: ' .. context)
+end, { desc = 'Copy selection as context with line numbers' })
