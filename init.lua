@@ -126,6 +126,20 @@ require('lazy').setup({
   { 'tpope/vim-surround' },
   { 'tpope/vim-vinegar' },
   {
+    "georgeguimaraes/review.nvim",
+    dependencies = {
+      "esmuellert/codediff.nvim",
+      "MunifTanjim/nui.nvim",
+    },
+    cmd = { "Review" },
+    keys = {
+      { "<leader>r", "<cmd>Review<cr>", desc = "Review" },
+      { "<leader>R", "<cmd>Review commits<cr>", desc = "Review commits" },
+      { "<leader>re", "<cmd>Review export<cr>", desc = "Review export" },
+    },
+    opts = {},
+  },
+  {
     'nvimtools/none-ls.nvim',
     config = function()
       local null_ls = require("null-ls")
