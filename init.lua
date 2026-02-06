@@ -137,7 +137,7 @@ require('lazy').setup({
       { "<leader>R", "<cmd>Review commits<cr>", desc = "Review commits" },
       { "<leader>re", "<cmd>Review export<cr>", desc = "Review export" },
     },
-    opts = {},
+    opts = { keymaps = { popup_submit = "<leader>s" } },
   },
   {
     'nvimtools/none-ls.nvim',
