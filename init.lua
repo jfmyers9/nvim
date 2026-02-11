@@ -137,6 +137,7 @@ require('lazy').setup({
   },
   {
     'jfmyers9/nvim-beads',
+    branch = 'bd-design',
     dependencies = {
       'nvim-lua/plenary.nvim',
       'ibhagwan/fzf-lua',

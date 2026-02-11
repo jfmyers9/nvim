@@ -12,7 +12,7 @@
   "none-ls.nvim": { "branch": "main", "commit": "68ed8b9bf5dfdae4d579fcd19723926f84d7b6cb" },
   "nui.nvim": { "branch": "main", "commit": "de740991c12411b663994b2860f1a4fd0937c130" },
   "nvim-autopairs": { "branch": "master", "commit": "59bce2eef357189c3305e25bc6dd2d138c1683f5" },
-  "nvim-beads": { "branch": "main", "commit": "906420dcdce93a901608b62672075f6f70cba681" },
+  "nvim-beads": { "branch": "bd-design", "commit": "2100ba21403eb9c61764ea662d8f452e628631e6" },
   "nvim-bqf": { "branch": "main", "commit": "f65fba733268ffcf9c5b8ac381287eca7c223422" },
   "nvim-cmp": { "branch": "main", "commit": "da88697d7f45d16852c6b2769dc52387d1ddc45f" },
   "nvim-treesitter": { "branch": "main", "commit": "9f2dad22ef8bb14fd1e0a3aa8859cdc88170668b" },
