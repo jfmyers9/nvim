@@ -136,7 +136,7 @@ require('lazy').setup({
     opts = { keymaps = { popup_submit = "<leader>s" } },
   },
   {
-    'joeblubaugh/nvim-beads',
+    'jfmyers9/nvim-beads',
     dependencies = {
       'nvim-lua/plenary.nvim',
       'ibhagwan/fzf-lua',
