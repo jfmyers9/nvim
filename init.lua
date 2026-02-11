@@ -136,6 +136,30 @@ require('lazy').setup({
     opts = { keymaps = { popup_submit = "<leader>s" } },
   },
   {
+    'joeblubaugh/nvim-beads',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'ibhagwan/fzf-lua',
+    },
+    cmd = { 'Beads', 'BeadsCreate', 'BeadsSync', 'BeadsFindTask' },
+    keys = {
+      { '<leader>td', '<cmd>Beads<cr>', desc = 'Task list' },
+      { '<leader>tc', '<cmd>BeadsCreate<cr>', desc = 'Create task' },
+      { '<leader>ts', '<cmd>BeadsSync<cr>', desc = 'Sync tasks' },
+      { '<leader>tt', '<cmd>BeadsFindTask<cr>', desc = 'Find task' },
+      { '<leader>tS', '<cmd>BeadsFindStatus<cr>', desc = 'Update status' },
+      { '<leader>tP', '<cmd>BeadsFindPriority<cr>', desc = 'Update priority' },
+      { '<leader>tf', '<cmd>BeadsFilter<cr>', desc = 'Filter tasks' },
+      { '<leader>tF', '<cmd>BeadsClearFilters<cr>', desc = 'Clear filters' },
+      { '<leader>tr', '<cmd>Beads<cr>', desc = 'Refresh tasks' },
+    },
+    opts = {
+      keymaps = false,
+      auto_sync = false,
+      theme = 'dark',
+    },
+  },
+  {
     'nvimtools/none-ls.nvim',
     config = function()
       local null_ls = require("null-ls")
