@@ -165,31 +165,6 @@ require('lazy').setup({
     opts = { keymaps = { popup_submit = "<leader>s" } },
   },
   {
-    'jfmyers9/beadboard',
-    dependencies = { 'folke/snacks.nvim' },
-    cmd = {
-      'Beadboard', 'BdSearch', 'BdQuery', 'BdReady', 'BdBlocked',
-      'BdStale', 'BdCreate', 'BdStatus', 'BdEpicStatus', 'BdGraph', 'BdActivity',
-      'BdClaude', 'BdQuickExplore', 'BdQuickFix',
-    },
-    keys = {
-      { '<leader>td', '<cmd>Beadboard<cr>',      desc = 'Task list' },
-      { '<leader>ts', '<cmd>BdStatus<cr>',       desc = 'Project dashboard' },
-      { '<leader>tc', '<cmd>BdCreate<cr>',       desc = 'Create task' },
-      { '<leader>ta', '<cmd>BdActivity<cr>',     desc = 'Activity feed' },
-      { '<leader>te', '<cmd>BdEpicStatus<cr>',   desc = 'Epic status' },
-      { '<leader>tg', '<cmd>BdGraph<cr>',        desc = 'Dependency graph' },
-      { '<leader>tr', '<cmd>BdReady<cr>',        desc = 'Ready tasks' },
-      { '<leader>tb', '<cmd>BdBlocked<cr>',      desc = 'Blocked tasks' },
-      { '<leader>tt', '<cmd>BdStale<cr>',        desc = 'Stale tasks' },
-      { '<leader>tx', ':BdQuickExplore ',        desc = 'Quick explore' },
-      { '<leader>tf', ':BdQuickFix ',            desc = 'Quick fix' },
-    },
-    opts = {
-      claude_permission_mode = 'bypassPermissions',
-    },
-  },
-  {
     'nvimtools/none-ls.nvim',
     config = function()
       local null_ls = require("null-ls")
