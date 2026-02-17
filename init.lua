@@ -442,3 +442,137 @@ vim.keymap.set('v', '<leader>bl', function()
   vim.fn.setreg('+', context)
   vim.notify('Copied: ' .. context)
 end, { desc = 'Copy selection as context with line numbers' })
+
+-- Plan file utilities
+local function get_plan_dir()
+  local root = vim.fn.systemlist('git rev-parse --show-toplevel 2>/dev/null')[1]
+  local project = vim.fn.fnamemodify(root and root ~= '' and root or vim.fn.getcwd(), ':t')
+  return vim.fn.expand('~/.claude/plans/' .. project)
+end
+
+local function get_plan_files()
+  local dir = get_plan_dir()
+  local files = vim.fn.glob(dir .. '/*.md', false, true)
+  -- Sort by mtime descending (most recent first)
+  table.sort(files, function(a, b)
+    return vim.fn.getftime(a) > vim.fn.getftime(b)
+  end)
+  return files
+end
+
+local function parse_frontmatter(path)
+  local lines = vim.fn.readfile(path, '', 20)
+  local fm = {}
+  local in_fm = false
+  for _, line in ipairs(lines) do
+    if line == '---' then
+      if in_fm then break end
+      in_fm = true
+    elseif in_fm then
+      local key, val = line:match('^(%w+):%s*(.+)$')
+      if key then fm[key] = val end
+    end
+  end
+  return fm
+end
+
+local function relative_time(iso)
+  local y, m, d = iso:match('(%d+)-(%d+)-(%d+)')
+  if not y then return '' end
+  local then_ts = os.time({ year = y, month = m, day = d })
+  local diff = os.difftime(os.time(), then_ts)
+  local days = math.floor(diff / 86400)
+  if days == 0 then return 'today'
+  elseif days == 1 then return '1d ago'
+  else return days .. 'd ago' end
+end
+
+-- <leader>tp: Pick from project plans
+vim.keymap.set('n', '<leader>tp', function()
+  local files = get_plan_files()
+  if #files == 0 then
+    vim.notify('No plans in ' .. get_plan_dir(), vim.log.levels.INFO)
+    return
+  end
+
+  local entries = {}
+  local entry_map = {}
+  for _, path in ipairs(files) do
+    local fm = parse_frontmatter(path)
+    local slug = vim.fn.fnamemodify(path, ':t:r')
+    local status = fm.status or '?'
+    local age = fm.created and relative_time(fm.created) or ''
+    local entry = string.format('[%s] %s (%s)', status, slug, age)
+    table.insert(entries, entry)
+    entry_map[entry] = path
+  end
+
+  require('fzf-lua').fzf_exec(entries, {
+    prompt = 'Plans> ',
+    actions = {
+      ['default'] = function(selected)
+        for _, sel in ipairs(selected) do
+          local path = entry_map[sel]
+          if path then vim.cmd('edit ' .. vim.fn.fnameescape(path)) end
+        end
+      end,
+    },
+    previewer = 'builtin',
+    fzf_opts = { ['--no-multi'] = true },
+  })
+end, { desc = 'Plans' })
+
+-- <leader>tr: Open most recent plan
+vim.keymap.set('n', '<leader>tr', function()
+  local files = get_plan_files()
+  if #files == 0 then
+    vim.notify('No plans in ' .. get_plan_dir(), vim.log.levels.INFO)
+    return
+  end
+  vim.cmd('edit ' .. vim.fn.fnameescape(files[1]))
+end, { desc = 'Recent plan' })
+
+-- <leader>tg: Grep across plans
+vim.keymap.set('n', '<leader>tg', function()
+  local dir = get_plan_dir()
+  if vim.fn.isdirectory(dir) == 0 then
+    vim.notify('No plans directory: ' .. dir, vim.log.levels.INFO)
+    return
+  end
+  require('fzf-lua').live_grep_native({ cwd = dir })
+end, { desc = 'Grep plans' })
+
+-- <leader>tc: Copy plan paths as context
+vim.keymap.set('n', '<leader>tc', function()
+  local files = get_plan_files()
+  if #files == 0 then
+    vim.notify('No plans in ' .. get_plan_dir(), vim.log.levels.INFO)
+    return
+  end
+
+  local entries = {}
+  local entry_map = {}
+  for _, path in ipairs(files) do
+    local slug = vim.fn.fnamemodify(path, ':t')
+    table.insert(entries, slug)
+    entry_map[slug] = path
+  end
+
+  require('fzf-lua').fzf_exec(entries, {
+    prompt = 'Copy plan context> ',
+    actions = {
+      ['default'] = function(selected)
+        local refs = {}
+        for _, sel in ipairs(selected) do
+          local path = entry_map[sel]
+          if path then table.insert(refs, '@' .. path) end
+        end
+        if #refs > 0 then
+          vim.fn.setreg('+', table.concat(refs, ' '))
+          vim.notify('Copied ' .. #refs .. ' plan refs to clipboard')
+        end
+      end,
+    },
+    fzf_opts = { ['--multi'] = true },
+  })
+end, { desc = 'Copy plan context' })
