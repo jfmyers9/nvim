@@ -49,6 +49,7 @@ require('lazy').setup({
     'williamboman/mason-lspconfig.nvim',
     dependencies = {
       'williamboman/mason.nvim',
+      'neovim/nvim-lspconfig',
       'hrsh7th/cmp-nvim-lsp',
     },
     config = function()
@@ -100,8 +101,6 @@ require('lazy').setup({
         },
       })
 
-      -- Enable all installed servers
-      vim.lsp.enable(require('mason-lspconfig').get_installed_servers())
     end,
   },
   {
