@@ -40,8 +40,9 @@ require('lazy').setup({
     lazy = false,
     priority = 1000,
     config = function()
-      vim.cmd([[colorscheme tokyonight-storm]])
-      -- vim.cmd([[colorscheme tokyonight-day]])
+      local is_dark = vim.fn.system("defaults read -g AppleInterfaceStyle 2>/dev/null"):find("Dark")
+      vim.o.background = is_dark and "dark" or "light"
+      vim.cmd([[colorscheme tokyonight]])
     end,
   },
   { 'williamboman/mason.nvim', config = true },
