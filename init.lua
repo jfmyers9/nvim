@@ -40,7 +40,8 @@ require('lazy').setup({
     lazy = false,
     priority = 1000,
     config = function()
-      local is_dark = vim.fn.system("defaults read -g AppleInterfaceStyle 2>/dev/null"):find("Dark")
+      local apple_style = vim.fn.system("defaults read -g AppleInterfaceStyle 2>/dev/null")
+      local is_dark = vim.v.shell_error ~= 0 or apple_style:find("Dark")
       vim.o.background = is_dark and "dark" or "light"
       vim.cmd([[colorscheme tokyonight]])
     end,
