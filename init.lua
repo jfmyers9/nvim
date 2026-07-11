@@ -107,12 +107,25 @@ require('lazy').setup({
   },
   {
     'nvim-treesitter/nvim-treesitter',
+    branch = 'main',
     build = ':TSUpdate',
-    opts = {
-      ensure_installed = { 'go', 'lua', 'vim' },
-      auto_install = true,
-      highlight = { enable = true },
-    },
+    lazy = false,
+    config = function()
+      require('nvim-treesitter').setup()
+      if vim.fn.executable('tree-sitter') == 1 then
+        require('nvim-treesitter').install({ 'go', 'lua', 'vim' })
+      end
+
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = { 'go', 'lua', 'vim' },
+        callback = function(args)
+          local ok, parser = pcall(vim.treesitter.get_parser, args.buf)
+          if ok and parser then
+            vim.treesitter.start(args.buf)
+          end
+        end,
+      })
+    end,
   },
   {
     'folke/snacks.nvim',
